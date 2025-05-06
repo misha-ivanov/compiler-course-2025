@@ -1,6 +1,13 @@
 ; RUN: opt -load-pass-plugin %llvmshlibdir/Ivanov_M_Division_Pass_Ivanov_Mikhail_FIIT1_LLVM_IR%pluginext\
 ; RUN: -passes=bit_shift_pass -S %s | FileCheck %s
 
+define i32 @test_divider_pos_const() {
+; CHECK-LABEL: @test_divider_pos_const
+; CHECK-NEXT: ret i32 5
+  %div1 = sdiv i32 10, 2
+  ret i32 %div1
+}
+
 define i32 @test_divider_pos_one(i32 %value) {
 ; CHECK-LABEL: @test_divider_pos_one
 ; CHECK-NEXT: ret i32 %value
@@ -71,5 +78,15 @@ define i32 @test_mixed_division_neg(i32 %value) {
   %div1 = udiv i32 %value, 4
   %div2 = sdiv i32 %value, -128
   %result = sub i32 %div1, %div2
+  ret i32 %result
+}
+
+define i32 @test_unsigned_division_not_2(i32 %value) {
+; CHECK-LABEL: @test_unsigned_division_not_2
+; CHECK-NEXT: udiv i32 %value, 3
+; CHECK-NEXT: lshr i32 %value, 7
+  %div1 = udiv i32 %value, 3
+  %div2 = udiv i32 %value, 128
+  %result = add i32 %div1, %div2
   ret i32 %result
 }
